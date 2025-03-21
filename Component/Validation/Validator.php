@@ -71,6 +71,10 @@ class Validator
             $this->is_required($field);
         }
 
+        if ($rule === '?required') {
+            $this->is_required_on_set($field);
+        }
+
         if ($rule === 'string') {
             $this->is_string($field);
         }
@@ -121,6 +125,18 @@ class Validator
     protected function is_required(string $field): void
     {
         if (empty($this->data[$field] ?? null)) {
+            $this->add_error($field, 'This field is required.');
+        }
+    }
+
+    /**
+     * Validates that the specified field is required and not empty only if set.
+     *
+     * @param string $field The field to validate.
+     */
+    protected function is_required_on_set(string $field): void
+    {
+        if (isset($this->data[$field]) && empty($this->data[$field])) {
             $this->add_error($field, 'This field is required.');
         }
     }
